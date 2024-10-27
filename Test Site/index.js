@@ -1,19 +1,30 @@
-console.log("test");
-//window.alert("uh oh");
-
 const express = require('express');
 const app = express();
+const path = require('path');
+const { readFile } = require('fs');
 
-const { readFile, readFileSync } = require('fs');
 
+// Makes home page accessible
 app.get('/', (request, response) => {
-
     readFile('./home.html', 'utf8', (err, html) => {
         if (err) {
             response.status(500).send('oopsies');
+            return;
         }
-        response.send(html);
-    })
+        return response.send(html);
+    });
 });
 
-app.listen(process.env.PORT || 3000, () => console.log('App available on website http://localhost:3000'));
+// Makes guess screen accessible
+app.get('/guessScreen', (request, response) => {
+    readFile('./guessScreen.html', 'utf8', (err, html) => {
+        if (err) {
+            response.status(500).send('oopsies');
+            return;
+        }
+        return response.send(html);
+    });
+});
+
+// Start the server
+app.listen(process.env.PORT || 3000, () => console.log('App available on http://localhost:3000'));
