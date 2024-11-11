@@ -1,0 +1,76 @@
+/* Game.css */
+
+.game-container {
+    text-align: center;
+    padding: 40px;
+    background-color: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: var(--primary-red);
+}
+
+.category-input input {
+    padding: 10px;
+    margin-right: 10px;
+    border: 2px solid var(--secondary-blue);
+    border-radius: 5px;
+}
+
+.category-input button {
+    background-color: var(--secondary-blue);
+    color: var(--white);
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+}
+
+.game-content {
+    margin-top: 20px;
+}
+
+.logo-display img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    margin-bottom: 20px;
+}
+
+.answer-input input {
+    padding: 10px;
+    border: 2px solid var(--secondary-blue);
+    border-radius: 5px;
+}
+
+.answer-input button {
+    background-color: var(--primary-red);
+    color: var(--white);
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+}
+
+.hint {
+    margin-top: 10px;
+    color: var(--primary-red);
+}
+
+.score {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.game-over {
+    margin-top: 20px;
+}
+
+.game-over button {
+    background-color: var(--primary-red);
+    color: var(--white);
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+}
