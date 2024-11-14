@@ -17,8 +17,10 @@ To run the whole app (frontend + backend):
     install react
     install react-router-dom
 
-
-Frontend:
-cd "CS124H React Frontend"
-npm run dev
+2) Start the Frontend:
+    cd "CS124H React Frontend"
+    npm run dev
+    Open another terminal in VS Code
+    cd backend
+    node index.js
 
