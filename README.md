@@ -6,3 +6,19 @@ Group Name: TEAM_NAME
 Team Members: ahaze5, aryang11, ericz7, hridhay2, lisaz2, masingh2, oscanio2, wlzhang2
 
 Project Manager: iychen4
+
+To run the whole app (frontend + backend):
+1) Install dependencies:
+    npm install vite@latest
+    npm install cors
+    install node js
+    install mongodb
+    install mongoose
+    install react
+    install react-router-dom
+
+
+Frontend:
+cd "CS124H React Frontend"
+npm run dev
+

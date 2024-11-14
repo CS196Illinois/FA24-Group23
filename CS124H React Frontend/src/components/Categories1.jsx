@@ -1,30 +1,40 @@
 import React, { useState, useEffect } from 'react';
-// import './Categories.css'; // Assuming you have a CSS file for styling
 
-const Categories = () => {
-  const [data, setData] = useState({
-    colleges: [],
-    companies: [],
-    sports: [],
-  });
+const Categories1 = () => {
+  const [colleges, setColleges] = useState([]);
+  const [companies, setCompanies] = useState([]);
+  const [sports, setSports] = useState([]);
 
+  // Fetch data from the API when the component mounts
   useEffect(() => {
-    // Fetch categories from backend API
-    fetch('http://localhost:5000/categories')
+    // Fetch College data
+    fetch('http://localhost:5000/Categories/College')
       .then((response) => response.json())
-      .then((data) => setData(data))
-      .catch((error) => console.error('Error fetching categories:', error));
+      .then((data) => setColleges(data))
+      .catch((error) => console.error('Error fetching colleges:', error));
+
+    // Fetch Company data
+    fetch('http://localhost:5000/Categories/Company')
+      .then((response) => response.json())
+      .then((data) => setCompanies(data))
+      .catch((error) => console.error('Error fetching companies:', error));
+
+    // Fetch Sports data
+    fetch('http://localhost:5000/Categories/Sports')
+      .then((response) => response.json())
+      .then((data) => setSports(data))
+      .catch((error) => console.error('Error fetching sports:', error));
   }, []);
 
   return (
     <div>
-      <h1>All Categories</h1>
+      <h1>Categories</h1>
 
-      {/* Colleges */}
+      {/* Colleges Section */}
       <section>
         <h2>Colleges</h2>
         <ul>
-          {data.colleges.map((college) => (
+          {colleges.map((college) => (
             <li key={college._id}>
               <h3>{college.name}</h3>
               {/* Render SVG content */}
@@ -34,11 +44,11 @@ const Categories = () => {
         </ul>
       </section>
 
-      {/* Companies */}
+      {/* Companies Section */}
       <section>
         <h2>Companies</h2>
         <ul>
-          {data.companies.map((company) => (
+          {companies.map((company) => (
             <li key={company._id}>
               <h3>{company.name}</h3>
               {/* Render SVG content */}
@@ -48,11 +58,11 @@ const Categories = () => {
         </ul>
       </section>
 
-      {/* Sports */}
+      {/* Sports Section */}
       <section>
         <h2>Sports</h2>
         <ul>
-          {data.sports.map((sport) => (
+          {sports.map((sport) => (
             <li key={sport._id}>
               <h3>{sport.name}</h3>
               {/* Render SVG content */}
@@ -65,4 +75,4 @@ const Categories = () => {
   );
 };
 
-export default Categories;
+export default Categories1;

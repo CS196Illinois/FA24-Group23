@@ -14,21 +14,21 @@ async function run() {
     const database = client.db('Categories'); // The database is called Categories
 
     // API endpoint to get categories from College collection
-    app.get('/categories/college', async (req, res) => {
+    app.get('/Categories/College', async (req, res) => {
       const collegeCollection = database.collection('College');
       const colleges = await collegeCollection.find({}).toArray();
       res.json(colleges);
     });
 
     // API endpoint to get categories from Company collection
-    app.get('/categories/company', async (req, res) => {
+    app.get('/Categories/Company', async (req, res) => {
       const companyCollection = database.collection('Company');
       const companies = await companyCollection.find({}).toArray();
       res.json(companies);
     });
 
     // API endpoint to get categories from Sports collection
-    app.get('/categories/sports', async (req, res) => {
+    app.get('/Categories/Sports', async (req, res) => {
       const sportsCollection = database.collection('Sports');
       const sports = await sportsCollection.find({}).toArray();
       res.json(sports);
