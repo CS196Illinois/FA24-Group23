@@ -11,13 +11,27 @@ const client = new MongoClient(uri);
 async function run() {
   try {
     await client.connect();
-    const database = client.db('Categories'); // Replace with your actual database name
-    const collection = database.collection('College');
+    const database = client.db('Categories'); // The database is called Categories
 
-    // API endpoint to get categories
-    app.get('/categories', async (req, res) => {
-      const categories = await collection.find({}).toArray();
-      res.json(categories);
+    // API endpoint to get categories from College collection
+    app.get('/categories/college', async (req, res) => {
+      const collegeCollection = database.collection('College');
+      const colleges = await collegeCollection.find({}).toArray();
+      res.json(colleges);
+    });
+
+    // API endpoint to get categories from Company collection
+    app.get('/categories/company', async (req, res) => {
+      const companyCollection = database.collection('Company');
+      const companies = await companyCollection.find({}).toArray();
+      res.json(companies);
+    });
+
+    // API endpoint to get categories from Sports collection
+    app.get('/categories/sports', async (req, res) => {
+      const sportsCollection = database.collection('Sports');
+      const sports = await sportsCollection.find({}).toArray();
+      res.json(sports);
     });
 
     app.listen(5000, () => {
