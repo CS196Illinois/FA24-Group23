@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import '../Game.css';
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import "../Game.css";
 
 const Game = () => {
   const location = useLocation();
@@ -9,7 +9,7 @@ const Game = () => {
   const [currentLogoIndex, setCurrentLogoIndex] = useState(0);
   const [score, setScore] = useState(50);
   const [guessesLeft, setGuessesLeft] = useState(5);
-  const [userGuess, setUserGuess] = useState('');
+  const [userGuess, setUserGuess] = useState("");
   const [correctAnswers, setCorrectAnswers] = useState(0);
 
   const currentLogo = logos[currentLogoIndex] || {};
@@ -17,37 +17,37 @@ const Game = () => {
   useEffect(() => {
     // Reset game state if no logos available
     if (logos.length === 0) {
-      navigate('/');
+      navigate("/");
     }
   }, [logos, navigate]);
 
   const handleGuess = () => {
     if (userGuess.trim().toLowerCase() === currentLogo.name.toLowerCase()) {
-      setCorrectAnswers(prev => prev + 1);
-      setScore(prev => prev); // Score remains the same for correct guess
+      setCorrectAnswers((prev) => prev + 1);
+      setScore((prev) => prev); // Score remains the same for correct guess
       setGuessesLeft(5); // Reset guesses for next logo
       if (currentLogoIndex < logos.length - 1) {
-        setCurrentLogoIndex(prev => prev + 1); // Move to next logo
+        setCurrentLogoIndex((prev) => prev + 1); // Move to next logo
       } else {
         // Game over, navigate to Results page
-        navigate('/results', {
-          state: { score, correctAnswers, totalLogos: logos.length }
+        navigate("/results", {
+          state: { score, correctAnswers, totalLogos: logos.length },
         });
       }
     } else {
-      setGuessesLeft(prev => prev - 1);
-      setScore(prev => (prev > 10 ? prev - 10 : 0)); // Reduce score by 10 for wrong guess
+      setGuessesLeft((prev) => prev - 1);
+      setScore((prev) => (prev > 10 ? prev - 10 : 0)); // Reduce score by 10 for wrong guess
     }
 
     if (guessesLeft <= 1) {
       setGuessesLeft(0);
       setScore(0);
-      navigate('/results', {
-        state: { score, correctAnswers, totalLogos: logos.length }
+      navigate("/results", {
+        state: { score, correctAnswers, totalLogos: logos.length },
       });
     }
 
-    setUserGuess('');
+    setUserGuess("");
   };
 
   return (
@@ -55,8 +55,10 @@ const Game = () => {
       <h1>Guess the Logo</h1>
 
       {/* Display current logo */}
-      <h2>Logo {currentLogoIndex + 1} of {logos.length}</h2>
-      
+      <h2>
+        Logo {currentLogoIndex + 1} of {logos.length}
+      </h2>
+
       {/* Logo Image Container */}
       <div className="logo-container">
         <div dangerouslySetInnerHTML={{ __html: currentLogo.file }}></div>
