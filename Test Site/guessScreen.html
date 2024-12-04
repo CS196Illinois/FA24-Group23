@@ -53,13 +53,6 @@
             cursor: pointer;
             background-color: #04aa07a6;
         }
-        .distorted {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transform: skew(10deg, 10deg) scale(0.4, 1.2);
-            color: blue;
-        }
         .image {
             height: 500px;
             width: 500px;
@@ -81,12 +74,11 @@
         </div>
         <h2>What Logo Is This?</h2>
         <br>
-
-        <!-- Company logo aka file_name contents 
-            - Need to find a way to style without manually modifying viewbox and height-->
+        
+        <!-- Company logo aka file_name contents -->
         <div class = "image">
-            <svg class = "" id = "logo" height = "500" width = "500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1500" >
-                <path d="M404.345 229.846c52.467 0 98.494-20.488 138.08-61.465s59.38-88.626 59.38-142.947c0-5.966-.472-14.444-1.414-25.434-6.912.942-12.096 1.727-15.552 2.355-48.383 6.908-90.954 30.615-127.713 71.12-36.758 40.506-55.137 83.838-55.137 129.996 0 5.337.785 14.13 2.356 26.375zM592.379 950c37.387 0 78.701-25.59 123.943-76.772S796.122 761.915 820 692.836c-88.912-45.844-133.368-111.626-133.368-197.348 0-71.591 35.973-132.82 107.92-183.688-49.954-62.486-115.931-93.729-197.931-93.729-34.56 0-66.134 5.181-94.724 15.543l-17.908 6.594-24.035 9.42c-15.709 5.966-30.004 8.95-42.885 8.95-10.054 0-23.25-3.455-39.586-10.363l-18.38-7.536-17.436-7.065c-25.449-10.676-52.782-16.014-82-16.014-78.23 0-141.065 26.376-188.506 79.128C23.72 349.479 0 419.03 0 505.379c0 121.517 38.015 233.772 114.046 336.763C166.828 914.047 215.054 950 258.724 950c18.537 0 36.916-3.611 55.138-10.833l23.092-9.42 18.38-6.594c25.762-9.106 49.482-13.659 71.16-13.659 22.935 0 49.326 5.81 79.173 17.427l14.609 5.652C550.75 944.191 574.786 950 592.379 950z"/>
+            <svg id = "logo" height = "500" width = "500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1500" >
+                <path d=""/>
             </svg>
             
         </div>
@@ -99,54 +91,147 @@
         
     </main>
     <script>
-        const firstBox = document.getElementById("logo").getAttribute("viewBox");
-        const svg = document.getElementById("logo");
-        zoom(svg, 0, 0.125);
+        class Logo {
+            // Add typeof to ensure variables are valid
+            constructor(newSvg, newAnswer, newLogoElement) {
+                this.svg = newSvg;
+                this.logoElement = newLogoElement;
+                this.answer = newAnswer;
+
+                this.currentBox = this.svg.getAttribute("viewBox");
+                this.firstBox = this.currentBox;
+                this.zoomLevel = 1;
+
+                // Sets random filters, turn into a temp variable later
+                this.random = Math.floor(Math.random() * 10000);
+                // Individual transformation elements
+                this.tElements = new Map([
+                    ["rotate", Math.random() * 360],
+                    ["scaleX", Math.random() + 0.1],
+                    ["scaleY", Math.random() + 0.1]
+                ])
+                this.transformation = "rotate(" + this.tElements.get("rotate") + " 750 750) scale("
+                                        + this.tElements.get("scaleX") + " " + this.tElements.get("scaleY") + ") ";
+
+                this.filters = {
+                    grayscale: "filter: grayscale(100%)",
+                    blur: "filter: blur(5px)"
+                };
+                
+            }
+
+            distort() {
+                let filterString = "";
+
+                // Iterate over each key in the modifiers
+                for (let key in this.filters) {
+                    if (this.filters.hasOwnProperty(key)) {
+                        const value = this.filters[key];
+                        filterString += value.replace("filter:", "").trim() + " ";
+                    }
+                }
+                const pathElement = this.svg.querySelector("path");
+
+                // Sample physical transformations
+                //const transformString = "rotate(45 750 750) scale(1.5 0.75) skewX(20) skewY(10)";
+
+                // Apply the transformation
+                pathElement.setAttribute("transform", logoOne.transformation);
+                this.svg.style.filter = filterString.trim();
+            }
+
+            zoom(newZoom) {
+                this.zoomLevel *= newZoom;
+
+                const oldBox = this.svg.getAttribute("viewBox").split(" ").map(Number);
+                const [minX, minY, width, height] = oldBox;
+
+            
+                const newWidth = width * (newZoom);
+                const newMinX = minX + ((width - newWidth)) * 0.5;
+        
+                const newHeight = height * newZoom;
+                const newMinY = minY + (height - newHeight) * 0.5;
+
+                this.svg.setAttribute("viewBox", `${newMinX} ${newMinY} ${newWidth} ${newHeight}`);
+                
+                // Possibly useless
+                //this.svg.style.width = `${this.svg.clientWidth}px`; // retains the original width 
+                //this.svg.style.height = `${this.svg.clientHeight}px`; // retains the original height 
+            }
+
+            reset(duration = 1000) {
+                const pathElement = this.svg.querySelector("path");
+                const startTime = performance.now();
+
+                // Distorted image
+                const initialTransform = logoOne.transformation;
+                // Original image
+                const finalTransform = "";
+
+                const animate = (time) => {
+                const elapsed = time - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Eased transition function I stole from the internet
+                const easedProgress = 1 - Math.pow(1 - progress, 3);
+
+                // Gradually animate the physical transformation
+                if (easedProgress < 1) {
+                    const transformString = `rotate(${this.tElements.get("rotate") * (1 - easedProgress)} 750 750) scale(${this.tElements.get("scaleX") + ((1-this.tElements.get("scaleY")) * easedProgress)} ${this.tElements.get("scaleY") + (1-this.tElements.get("scaleY")) * easedProgress})`;
+                    pathElement.setAttribute("transform", transformString);
+                } else {
+                    // Reset the transformation completely at the end
+                    //pathElement.setAttribute("transform", finalTransform);
+                }
+
+                // Animate the filters
+                const grayscale = 100 - progress * 100;
+                const blur = 5 - progress * 5;
+                this.svg.style.filter = `grayscale(${grayscale}%) blur(${blur}px)`;
+
+                // Check if animation ends
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+                };
+                requestAnimationFrame(animate);
+}
+
+        }
+
+        const logoOne = new Logo(document.getElementById("logo"), "apple", "M404.345 229.846c52.467 0 98.494-20.488 138.08-61.465s59.38-88.626 59.38-142.947c0-5.966-.472-14.444-1.414-25.434-6.912.942-12.096 1.727-15.552 2.355-48.383 6.908-90.954 30.615-127.713 71.12-36.758 40.506-55.137 83.838-55.137 129.996 0 5.337.785 14.13 2.356 26.375zM592.379 950c37.387 0 78.701-25.59 123.943-76.772S796.122 761.915 820 692.836c-88.912-45.844-133.368-111.626-133.368-197.348 0-71.591 35.973-132.82 107.92-183.688-49.954-62.486-115.931-93.729-197.931-93.729-34.56 0-66.134 5.181-94.724 15.543l-17.908 6.594-24.035 9.42c-15.709 5.966-30.004 8.95-42.885 8.95-10.054 0-23.25-3.455-39.586-10.363l-18.38-7.536-17.436-7.065c-25.449-10.676-52.782-16.014-82-16.014-78.23 0-141.065 26.376-188.506 79.128C23.72 349.479 0 419.03 0 505.379c0 121.517 38.015 233.772 114.046 336.763C166.828 914.047 215.054 950 258.724 950c18.537 0 36.916-3.611 55.138-10.833l23.092-9.42 18.38-6.594c25.762-9.106 49.482-13.659 71.16-13.659 22.935 0 49.326 5.81 79.173 17.427l14.609 5.652C550.75 944.191 574.786 950 592.379 950z");
+        
+        const pathElement = logoOne.svg.querySelector("path");
+        pathElement.setAttribute("d", logoOne.logoElement);
+        //logoOne.zoom(0.125);
+        logoOne.distort();
 
         document.getElementById("submitButton").addEventListener("click", function() {
             const resultText = document.getElementById("result");
             
             // Resets image to original state
-            svg.classList.remove("distorted");
             resultText.style.display = "block";
             
             // Checks if the user guess is correct, make this a seperate function
-            if (document.getElementById("userGuess").value === "apple") {
+            if (document.getElementById("userGuess").value.toLowerCase().trim() === logoOne.answer) {
+                logoOne.reset();
+
                 resultText.textContent = "Correct!";
-                svg.setAttribute("viewBox", firstBox);
-                result.style.color = "green";
+                resultText.style.color = "green";
             }
             else {
+                if (logoOne.zoomLevel != 1)
+                    logoOne.zoom(2);
                 resultText.textContent = "Incorrect.";
-                zoom(svg, 0, 2)
-                result.style.color = "red";
+                resultText.style.color = "red";
             }
         });
         
         document.getElementById("testButton").addEventListener("click", function() {
-            zoom(svg, 1, 0.5)
-            document.getElementById("testText").textContent =
-            svg.getAttribute("viewBox") + "\n- ";
+            document.getElementById("testText").textContent = "clicked " + logoOne.random;
+            logoOne.reset();
         });
-
-        function zoom(svgElement, anchor, zoomLevel = 0.5) {
-            // Viewbox contains 4 values: minX, minY, width, height 
-            const oldBox = svgElement.getAttribute("viewBox").split(" ").map(Number);
-            const [minX, minY, width, height] = oldBox;
-
-            
-            const newWidth = width * (zoomLevel);
-            const newMinX = minX + ((width - newWidth)) * 0.5;
-        
-            const newHeight = height * zoomLevel;
-            const newMinY = minY + (height - newHeight) * 0.5;
-
-            svgElement.setAttribute("viewBox", `${newMinX} ${newMinY} ${newWidth} ${newHeight}`);
-
-            svgElement.style.width = `${svgElement.clientWidth}px`; // retains the original width 
-            svgElement.style.height = `${svgElement.clientHeight}px`; // retains the original height 
-        }
-
     </script> 
 
 </body>
