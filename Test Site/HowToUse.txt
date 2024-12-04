@@ -1,3 +1,0 @@
-- Navigate to 'Test Site' folder in console
-- Type "Node ." in console
-- Navigate to http://localhost:3000/
