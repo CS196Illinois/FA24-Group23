@@ -1,137 +1,53 @@
 /* App.css */
-
-:root {
-  --primary-red: #e74c3c;
-  --secondary-blue: #3498db;
-  --white: #fff;
-  --black: #2c3e50;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f4f9;
-  color: var(--black);
-}
-
 .App {
+  font-family: 'Arial', sans-serif;
+  background-color: #f0f8ff;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-color: #f4f4f9;
 }
 
 h1, h2 {
-  color: var(--primary-red);
+  color: #333;
+  font-weight: 600;
 }
 
-/* Basic button styling */
 button {
-  background-color: var(--primary-red);
-  color: var(--white);
-  border: none;
-  border-radius: 5px;
-  padding: 10px 15px;
   cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  margin: 10px;
+  font-size: 16px;
   transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: var(--secondary-blue);
+  background-color: #FF7F00;
 }
 
-/* Input fields */
-input {
-  border: 2px solid var(--secondary-blue);
-  border-radius: 5px;
-  padding: 10px;
-  width: 100%;
-  margin-bottom: 15px;
-}
-
-/* Category Buttons */
-.category-button {
-  background-color: var(--secondary-blue);
-  color: var(--white);
-  padding: 10px 20px;
-  margin: 10px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.category-button:hover {
-  background-color: var(--primary-red);
-}
-
-/* Logos container */
-.logos-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-}
-
-.logo-item {
+.game-title {
+  font-size: 2.5rem;
+  color: #FFA500;
   text-align: center;
 }
 
-.logo-item img {
-  max-width: 100px;
-  height: auto;
-  margin-bottom: 10px;
+.play-button {
+  background-color: #0056b3;
+  color: white;
 }
 
-/* Difficulty Page */
-.difficulty-container {
-  text-align: center;
-  padding: 40px;
-  background-color: var(--white);
-  border-radius: 8px;
+.login-button {
+  background-color: #ff6347;
+  color: white;
+}
+
+.sidebar {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #fff;
+  padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.gear-icon {
-  font-size: 30px;
-  color: var(--primary-red);
-  margin-bottom: 10px;
-}
-
-/* How to Play section */
-.how-to-play {
-  margin-top: 20px;
-  color: var(--secondary-blue);
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.difficulty-button {
-  background-color: var(--primary-red);
-  color: var(--white);
-  padding: 15px 25px;
-  margin: 10px;
-  font-size: 18px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.difficulty-button:hover {
-  background-color: var(--secondary-blue);
-}
-
-.begin-button {
-  background-color: var(--secondary-blue);
-  color: var(--white);
-  padding: 15px 25px;
-  font-size: 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.begin-button:hover {
-  background-color: var(--primary-red);
 }

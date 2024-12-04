@@ -1,41 +1,81 @@
-import React, { useState } from 'react';
-import '../Game.css'; // Optional: Add a custom CSS file for styling
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import '../Game.css';
 
 const Game = () => {
-    // State to store the user input
-    const [userInput, setUserInput] = useState('');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const logos = location.state?.logos || [];
+  const [currentLogoIndex, setCurrentLogoIndex] = useState(0);
+  const [score, setScore] = useState(50);
+  const [guessesLeft, setGuessesLeft] = useState(5);
+  const [userGuess, setUserGuess] = useState('');
+  const [correctAnswers, setCorrectAnswers] = useState(0);
 
-    // Placeholder for the image URL (you can update this with dynamic content)
-    const imageUrl = 'https://via.placeholder.com/150'; // Example placeholder image
+  const currentLogo = logos[currentLogoIndex] || {};
 
-    // Handle input change
-    const handleInputChange = (e) => {
-        setUserInput(e.target.value);
-    };
+  useEffect(() => {
+    // Reset game state if no logos available
+    if (logos.length === 0) {
+      navigate('/');
+    }
+  }, [logos, navigate]);
 
-    return (
-        <div className="game-container">
-            {/* Image Container */}
-            <div className="logo-display">
-                <img
-                    src={imageUrl}
-                    alt="Logo"
-                    style={{ width: 150, height: 150 }}
-                />
-            </div>
+  const handleGuess = () => {
+    if (userGuess.trim().toLowerCase() === currentLogo.name.toLowerCase()) {
+      setCorrectAnswers(prev => prev + 1);
+      setScore(prev => prev); // Score remains the same for correct guess
+      setGuessesLeft(5); // Reset guesses for next logo
+      if (currentLogoIndex < logos.length - 1) {
+        setCurrentLogoIndex(prev => prev + 1); // Move to next logo
+      } else {
+        // Game over, navigate to Results page
+        navigate('/results', {
+          state: { score, correctAnswers, totalLogos: logos.length }
+        });
+      }
+    } else {
+      setGuessesLeft(prev => prev - 1);
+      setScore(prev => (prev > 10 ? prev - 10 : 0)); // Reduce score by 10 for wrong guess
+    }
 
-            {/* Input Box */}
-            <div className="answer-input">
-                <input
-                    type="text"
-                    placeholder="Enter your answer"
-                    value={userInput}
-                    onChange={handleInputChange}
-                    className="input-box"
-                />
-            </div>
-        </div>
-    );
+    if (guessesLeft <= 1) {
+      setGuessesLeft(0);
+      setScore(0);
+      navigate('/results', {
+        state: { score, correctAnswers, totalLogos: logos.length }
+      });
+    }
+
+    setUserGuess('');
+  };
+
+  return (
+    <div>
+      <h1>Guess the Logo</h1>
+
+      {/* Display current logo */}
+      <h2>Logo {currentLogoIndex + 1} of {logos.length}</h2>
+      
+      {/* Logo Image Container */}
+      <div className="logo-container">
+        <div dangerouslySetInnerHTML={{ __html: currentLogo.file }}></div>
+      </div>
+
+      {/* Guess Input */}
+      <input
+        type="text"
+        value={userGuess}
+        onChange={(e) => setUserGuess(e.target.value)}
+        placeholder="Enter your guess"
+      />
+
+      <button onClick={handleGuess}>Submit Guess</button>
+
+      <p>Guesses Left: {guessesLeft}</p>
+      <p>Score: {score}</p>
+    </div>
+  );
 };
 
 export default Game;

@@ -13,25 +13,24 @@ async function run() {
     await client.connect();
     const database = client.db('Categories'); // The database is called Categories
 
-    // API endpoint to get categories from College collection
-    app.get('/Categories/College', async (req, res) => {
-      const collegeCollection = database.collection('College');
-      const colleges = await collegeCollection.find({}).toArray();
-      res.json(colleges);
-    });
+    // API endpoint to get all collections and their documents
+    app.get('/collections', async (req, res) => {
+      try {
+        const collections = await database.listCollections().toArray(); // Get all collection names
+        const data = {};
 
-    // API endpoint to get categories from Company collection
-    app.get('/Categories/Company', async (req, res) => {
-      const companyCollection = database.collection('Company');
-      const companies = await companyCollection.find({}).toArray();
-      res.json(companies);
-    });
+        // Loop through each collection and fetch its documents
+        for (const collection of collections) {
+          const collectionName = collection.name;
+          const documents = await database.collection(collectionName).find({}).toArray();
+          data[collectionName] = documents; // Store documents under the collection name
+        }
 
-    // API endpoint to get categories from Sports collection
-    app.get('/Categories/Sports', async (req, res) => {
-      const sportsCollection = database.collection('Sports');
-      const sports = await sportsCollection.find({}).toArray();
-      res.json(sports);
+        res.json(data); // Send the aggregated data as JSON
+      } catch (error) {
+        console.error('Error fetching collections:', error);
+        res.status(500).send('Error fetching collections');
+      }
     });
 
     app.listen(5000, () => {

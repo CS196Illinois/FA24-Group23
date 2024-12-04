@@ -1,84 +1,38 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // For navigation
+import '../Categories.css';
 
 const Categories = () => {
-    const [categories, setCategories] = useState(["Category 1", "Category 2", "Category 3", "Category 4", "Category 5"]);
-    const [newCategory, setNewCategory] = useState('');
-    const [logos, setLogos] = useState([]);
-    const navigate = useNavigate();
+  const [collectionsData, setCollectionsData] = useState({});
+  const navigate = useNavigate(); // Hook for navigation
 
-    const handleCategoryChange = (e) => {
-        setNewCategory(e.target.value);
-    };
+  // Fetch all collections and their data when component mounts
+  useEffect(() => {
+    fetch('http://localhost:5000/collections')
+      .then((response) => response.json())
+      .then((data) => setCollectionsData(data))
+      .catch((error) => console.error('Error fetching collections:', error));
+  }, []);
 
-    const fetchLogos = async (query) => {
-        try {
-            const response = await fetch(`https://api.unsplash.com/search/photos?query=${query}&client_id=YOUR_UNSPLASH_API_KEY`);
-            const data = await response.json();
+  // Function to handle button click and navigate to Game.jsx with category data
+  const handleCategoryClick = (categoryType) => {
+    navigate(`/game/${categoryType}`, { state: { logos: collectionsData[categoryType] } }); // Pass logos as state
+  };
 
-            return data.results.map((item) => ({
-                name: item.alt_description || query,
-                logo: item.urls.thumb,
-            }));
-        } catch (error) {
-            console.error("Error fetching logos:", error);
-            return [];
-        }
-    };
+  return (
+    <div>
+      <h1>Select a Category</h1>
 
-    const handleSearch = async () => {
-        if (newCategory.trim()) {
-            const result = await fetchLogos(newCategory);
-            setLogos(result);
-        }
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            handleSearch();
-        }
-    };
-
-    const goToDifficulty = (category) => {
-        navigate('/difficulty', { state: { category } });
-    };
-
-    return (
-        <div className="categories-container">
-            <div className="gear-icon">&#9881;</div>
-            <h1>Categories</h1>
-            <div className="categories-box">
-                <div className="input-container">
-                    <input
-                        type="text"
-                        placeholder="Create your own category..."
-                        value={newCategory}
-                        onChange={handleCategoryChange}
-                        onKeyDown={handleKeyDown}
-                        className="category-input"
-                    />
-                    <button onClick={handleSearch} className="search-button">
-                        &#128269;
-                    </button>
-                </div>
-
-                {categories.map((category, index) => (
-                    <button key={index} className="category-button" onClick={() => goToDifficulty(category)}>
-                        {category}
-                    </button>
-                ))}
-
-                <div className="logos-container">
-                    {logos.map((logo, index) => (
-                        <div key={index} className="logo-item">
-                            <img src={logo.logo} alt={`${logo.name} logo`} />
-                            <span>{logo.name}</span>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
-    );
+      {/* Render buttons dynamically based on fetched collections */}
+      <section>
+        {Object.keys(collectionsData).map((collectionName) => (
+          <button key={collectionName} onClick={() => handleCategoryClick(collectionName)}>
+            {collectionName}
+          </button>
+        ))}
+      </section>
+    </div>
+  );
 };
 
 export default Categories;
