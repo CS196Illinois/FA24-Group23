@@ -11,14 +11,22 @@ const Game = () => {
   const [guessesLeft, setGuessesLeft] = useState(5);
   const [userGuess, setUserGuess] = useState("");
   const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [randomLogos, setRandomLogos] = useState([]); // Generates n logos for user to guess
 
-  const currentLogo = logos[currentLogoIndex] || {};
+  const currentLogo = randomLogos[currentLogoIndex] || {};
 
   useEffect(() => {
     // Reset game state if no logos available
     if (logos.length === 0) {
       navigate("/");
     }
+
+    // Generate random logos
+    const genRandomLogos = new Array(5);
+    for (let i = 0; i < genRandomLogos.length; i++) {
+      genRandomLogos[i] = logos[Math.floor(Math.random() * logos.length)];
+    }
+    setRandomLogos(genRandomLogos);
   }, [logos, navigate]);
 
   const handleGuess = () => {
@@ -26,7 +34,7 @@ const Game = () => {
       setCorrectAnswers((prev) => prev + 1);
       setScore((prev) => prev); // Score remains the same for correct guess
       setGuessesLeft(5); // Reset guesses for next logo
-      if (currentLogoIndex < logos.length - 1) {
+      if (currentLogoIndex < randomLogos.length - 1) {
         setCurrentLogoIndex((prev) => prev + 1); // Move to next logo
       } else {
         // Game over, navigate to Results page
@@ -43,7 +51,7 @@ const Game = () => {
       setGuessesLeft(0);
       setScore(0);
       navigate("/results", {
-        state: { score, correctAnswers, totalLogos: logos.length },
+        state: { score, correctAnswers, totalLogos: randomLogos.length },
       });
     }
 
@@ -56,12 +64,12 @@ const Game = () => {
 
       {/* Display current logo */}
       <h2>
-        Logo {currentLogoIndex + 1} of {logos.length}
+        Logo {currentLogoIndex + 1} of {randomLogos.length}
       </h2>
 
       {/* Logo Image Container */}
       <div className="logo-container">
-        <div dangerouslySetInnerHTML={{ __html: currentLogo.picture }}></div>
+        {<img src={currentLogo.picture} alt={`Logo ${currentLogoIndex + 1}`} />}
       </div>
 
       {/* Guess Input */}
@@ -73,6 +81,7 @@ const Game = () => {
       />
 
       <button onClick={handleGuess}>Submit Guess</button>
+      <p>{currentLogo.name}</p>
 
       <p>Guesses Left: {guessesLeft}</p>
       <p>Score: {score}</p>
