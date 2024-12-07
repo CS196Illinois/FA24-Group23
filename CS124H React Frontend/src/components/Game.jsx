@@ -61,7 +61,7 @@ const Game = () => {
 
       {/* Logo Image Container */}
       <div className="logo-container">
-        <div dangerouslySetInnerHTML={{ __html: currentLogo.file }}></div>
+        <div dangerouslySetInnerHTML={{ __html: currentLogo.picture }}></div>
       </div>
 
       {/* Guess Input */}
