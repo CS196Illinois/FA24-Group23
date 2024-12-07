@@ -11,12 +11,14 @@ const client = new MongoClient(uri);
 async function run() {
   try {
     await client.connect();
-    const database = client.db('Categories'); // The database is called Categories
+    const database = client.db('Logos'); // The database is called Logos
+
+    const collections = await database.listCollections().toArray();
 
     // API endpoint to get all collections and their documents
     app.get('/collections', async (req, res) => {
+      console.log('GET /collections was called'); // Debugging log
       try {
-        const collections = await database.listCollections().toArray(); // Get all collection names
         const data = {};
 
         // Loop through each collection and fetch its documents
@@ -25,7 +27,6 @@ async function run() {
           const documents = await database.collection(collectionName).find({}).toArray();
           data[collectionName] = documents; // Store documents under the collection name
         }
-
         res.json(data); // Send the aggregated data as JSON
       } catch (error) {
         console.error('Error fetching collections:', error);
