@@ -17,7 +17,6 @@ async function run() {
 
     // API endpoint to get all collections and their documents
     app.get('/collections', async (req, res) => {
-      console.log('GET /collections was called'); // Debugging log
       try {
         const data = {};
 
