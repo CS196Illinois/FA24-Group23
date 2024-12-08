@@ -1,11 +1,10 @@
-import React, { useRef, useEffect, useState } from "react";
-import "../LogoStyles.css"; 
+import React, { useRef, useState, useEffect } from "react";
+import "../LogoStyles.css";
 
-const LogoComponent = ({ svgPath, answer }) => {
-  const svgRef = useRef(null); // Reference to the SVG element
+const LogoComponent = ({ svgSource }) => {
+  const imgRef = useRef(null); // Reference to the image element
   const [zoomLevel, setZoomLevel] = useState(1); // State to manage zoom level
   const [result, setResult] = useState("");
-  const [inputValue, setInputValue] = useState("");
 
   // Initial transformations
   const initialTransformations = {
@@ -14,38 +13,38 @@ const LogoComponent = ({ svgPath, answer }) => {
     scaleY: Math.random() + 0.1,
   };
 
-  const transformation = `rotate(${initialTransformations.rotate} 750 750) scale(${initialTransformations.scaleX} ${initialTransformations.scaleY})`;
+  const transformation = `rotate(${initialTransformations.rotate}deg) scale(${initialTransformations.scaleX}, ${initialTransformations.scaleY})`;
 
   const distort = () => {
-    const svg = svgRef.current;
-    const pathElement = svg.querySelector("path");
+    const img = imgRef.current;
 
-    // Apply transformations
-    pathElement.setAttribute("transform", transformation);
-
-    // Apply filters
-    svg.style.filter = "grayscale(100%) blur(5px)";
+    // Apply transformations to the image itself
+    img.style.transform = transformation;
+    img.style.filter = "grayscale(20%) blur(5px)"; // Apply grayscale and blur filters
   };
 
   const reset = (duration = 1000) => {
-    const svg = svgRef.current;
-    const pathElement = svg.querySelector("path");
+    const img = imgRef.current;
     const startTime = performance.now();
 
-    // Animate reset transformations
+    // Animate reset transformations for the image
     const animate = (time) => {
       const elapsed = time - startTime;
       const progress = Math.min(elapsed / duration, 1);
 
       const easedProgress = 1 - Math.pow(1 - progress, 3); // Smooth easing function
-      const transformString = `rotate(${initialTransformations.rotate * (1 - easedProgress)} 750 750) scale(${1 + (initialTransformations.scaleX - 1) * easedProgress} ${1 + (initialTransformations.scaleY - 1) * easedProgress})`;
+      const transformString = `rotate(${
+        initialTransformations.rotate * (1 - easedProgress)
+      }deg) scale(${1 + (initialTransformations.scaleX - 1) * easedProgress}, ${
+        1 + (initialTransformations.scaleY - 1) * easedProgress
+      })`;
 
-      pathElement.setAttribute("transform", transformString);
+      img.style.transform = transformString;
 
       // Gradually reset filters
       const grayscale = 100 - progress * 100;
       const blur = 5 - progress * 5;
-      svg.style.filter = `grayscale(${grayscale}%) blur(${blur}px)`;
+      img.style.filter = `grayscale(${grayscale}%) blur(${blur}px)`;
 
       if (progress < 1) {
         requestAnimationFrame(animate);
@@ -56,16 +55,11 @@ const LogoComponent = ({ svgPath, answer }) => {
   };
 
   const zoom = (factor) => {
-    const svg = svgRef.current;
-    const currentViewBox = svg.getAttribute("viewBox").split(" ").map(Number);
-    const [minX, minY, width, height] = currentViewBox;
-
-    const newWidth = width * factor;
-    const newHeight = height * factor;
-    const newMinX = minX + (width - newWidth) * 0.5;
-    const newMinY = minY + (height - newHeight) * 0.5;
-
-    svg.setAttribute("viewBox", `${newMinX} ${newMinY} ${newWidth} ${newHeight}`);
+    const img = imgRef.current;
+    const newWidth = img.clientWidth * factor;
+    const newHeight = img.clientHeight * factor;
+    img.style.width = `${newWidth}px`;
+    img.style.height = `${newHeight}px`;
     setZoomLevel(zoomLevel * factor);
   };
 
@@ -86,24 +80,13 @@ const LogoComponent = ({ svgPath, answer }) => {
   return (
     <div className="logo-container">
       <div className="image">
-        <svg
-          ref={svgRef}
-          height="500"
-          width="500"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 1500 1500"
-        >
-          <path d={svgPath} />
-        </svg>
+        <img
+          ref={imgRef}
+          src={svgSource}
+          alt="Logo"
+          style={{ transition: "transform 0.3s ease, filter 0.3s ease" }} // Optional transition for smooth animation
+        />
       </div>
-      <input
-        type="text"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        placeholder="Enter your guess"
-      />
-      <button onClick={handleSubmit}>Submit</button>
-      <p style={{ color: result === "Correct!" ? "green" : "red" }}>{result}</p>
     </div>
   );
 };
